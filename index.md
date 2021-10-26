@@ -1,37 +1,69 @@
-## Welcome to GitHub Pages
+# Project 2 CSCI 5611
 
-You can use the [editor on GitHub](https://github.com/InfantDerrick/csci5611_proj2/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+- Infant Derrick Gnana Susairaj (gnana014)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### About
 
-### Markdown
+For part 2:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+I wanted to keep it pretty simple with this project. I wanted to be able to recreate a the animation that was played in class of a cloth colliding with a sphere. I also wanted to make sure you can see the collision from any angle desired. I also gave the sphere free motion so that it can move around and collide into the cloth at different more interesting angles.
 
-```markdown
-Syntax highlighted code block
+### Code
 
-# Header 1
-## Header 2
-### Header 3
+You can access the code [here](https://github.com/InfantDerrick/csci5611/tree/master/projects/proj2). 
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+#### Cloth Mechanics
+```processing
+  for(int i = 0; i < nx - 1; i++){
+      for(int j = 0; j < ny; j++){
+        Vec3 e = p[i+1][j].minus(p[i][j]);
+        float l = e.length();
+        e.normalize();
+        float v1 = dot(e, v[i][j]);
+        float v2 = dot(e, v[i+1][j]);
+        float f = -ks * (10 - l) - kd * (v1 - v2);
+        vn[i][j].add(e.times(f*dt));
+        vn[i+1][j].subtract(e.times(f*dt)); 
+      }
+    }
+    for(int i = 0; i < nx; i++){
+      for(int j = 0; j < ny - 1; j++){
+        Vec3 e = p[i][j+1].minus(p[i][j]);
+        float l = e.length();
+        e.normalize();
+        float v1 = dot(e, v[i][j]);
+        float v2 = dot(e, v[i][j+1]);
+        float f = -ks * (10 - l) - kd * (v1 - v2);
+        vn[i][j].add(e.times(f * dt));
+        vn[i][j+1].subtract(e.times(f*dt)); 
+      }
+    }
+ }
+```
+#### Cloth Mechanics
+```processing
+    for(int i = 0; i < nx; i++){
+      for(int j = 0; j < ny; j++){
+        
+        float d = spherePos.distanceTo(p[i][j]);
+        if(d < sphereR + 0.09){
+          Vec3 n = (spherePos.minus(p[i][j])).times(-1);
+          n.normalize();
+          Vec3 bounce = n.times(dot(v[i][j],n));
+          v[i][j].subtract(bounce.times(1.3));
+          p[i][j].add(n.times(.1 + sphereR - d));
+        }else{
+          p[i][j].add(v[i][j].times(dt));
+        }
+      }
+    }
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Media
 
-### Jekyll Themes
+[Main Demo](https://youtu.be/C6pF1_yd_cU).
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/InfantDerrick/csci5611_proj2/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+[Enviornment Demo](https://youtu.be/ftYPIYkWxxQ).
 
-### Support or Contact
+[Movement Demo](https://youtu.be/rlY_FiM6U8k).
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
